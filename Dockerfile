@@ -1,11 +1,11 @@
 # vim:set ft=dockerfile:
-FROM alpine:3.8
+FROM alpine:3.7
 
 ENV PG_MAJOR 9.4
 ENV PG_VERSION 9.4.9
 ENV PG_SHA256 c120a62e90214c20d9160da3ca3fbaec97d5f1656f1dd033f60e7297b7a1e1c9
-ENV POSTGIS_VERSION 2.4.4
-ENV POSTGIS_SHA256 0dff4902556ad45430e2b85dbe7e9baa758c6eb0bfd5ff6948f478beddd56b67
+ENV POSTGIS_VERSION 2.1.8
+ENV POSTGIS_SHA256 389b0ecccf329da7e2440a934305a55ee96c29b6f9ec0a7d9bd54209636635fc
 
 # alpine includes "postgres" user/group in base install
 #   /etc/passwd:22:postgres:x:70:70::/var/lib/postgresql:/bin/sh
@@ -187,13 +187,16 @@ RUN set -ex \
         gdal-dev \
         geos-dev \
         proj4-dev \
-        protobuf-c-dev \
+        libxslt \
+        docbook-xsl \
+        imagemagick \
     && cd /usr/src/postgis \
     && ./autogen.sh \
 # configure options taken from:
 # https://anonscm.debian.org/cgit/pkg-grass/postgis.git/tree/debian/rules?h=jessie
     && ./configure \
 #       --with-gui \
+    && make comments \
     && make \
     && make install \
     && apk add --no-cache --virtual .postgis-rundeps \
